@@ -8,11 +8,11 @@ if (prevNotif) {
 const notif = document.createElement('div');
 notif.id = "ps-notification";
 notif.style.position = "fixed";
-notif.style.top = "40px"; // Or "bottom: 40px" for bottom position
+notif.style.top = "40px";
 notif.style.left = "50%";
 notif.style.transform = "translateX(-50%)";
 notif.style.background = "rgba(20, 20, 20, 0.96)";
-notif.style.color = "#00FFFF"; // Cyan
+notif.style.color = "#00FFFF";
 notif.style.fontFamily = "PS5, 'Segoe UI', Arial, sans-serif";
 notif.style.fontWeight = "bold";
 notif.style.fontSize = "2.6em";
@@ -31,15 +31,12 @@ icon.innerHTML = `<svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22
 icon.style.marginRight = "24px";
 notif.prepend(icon);
 
-// Append to document body
 document.body.appendChild(notif);
 
-// Animate fade out after a few seconds
 setTimeout(() => {
     notif.style.transition = "opacity 0.75s";
     notif.style.opacity = "0";
     setTimeout(() => notif.remove(), 750);
 }, 3200);
 
-// Optionally log for console debugging
 console.log("[PS-HELLO] Notification shown!");
