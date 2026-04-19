@@ -6,10 +6,10 @@
     <script>
         let isPS5 = false;
 
+        // Detect if this is a PS5 with firmware 10.60
         function detectPlatform() {
-            const platform = navigator.platform;
             const userAgent = navigator.userAgent;
-
+            const platform = navigator.platform;
             if (platform.includes("PlayStation") && userAgent.includes("10.60")) {
                 isPS5 = true;
                 document.getElementById("status").innerText = "PS5 10.60 Detected!";
@@ -20,12 +20,8 @@
             }
         }
 
+        // Load all necessary scripts in sequence
         function loadScripts() {
-            if (!isPS5) {
-                alert("PS5 Platform Required. Please try again on PS5!");
-                return;
-            }
-
             const scripts = [
                 "./platform_module.js",
                 "./utility_module.js",
@@ -33,41 +29,63 @@
                 "./Stage1_16.2_16.5.1.js"
             ];
 
-            scripts.forEach(script => {
+            let index = 0;
+            const loadNextScript = () => {
+                if (index >= scripts.length) {
+                    const log = document.createElement("p");
+                    log.textContent = "All scripts loaded successfully.";
+                    document.getElementById("log").appendChild(log);
+                    return;
+                }
+
+                const script = scripts[index];
                 const scriptElement = document.createElement("script");
                 scriptElement.src = script;
                 scriptElement.async = false;
+
                 scriptElement.onload = () => {
-                    const log = document.createElement('p');
+                    const log = document.createElement("p");
                     log.textContent = `[SCRIPT LOADED]: ${script}`;
-                    document.querySelector("#log").appendChild(log);
+                    document.getElementById("log").appendChild(log);
+                    index++;
+                    loadNextScript();
                 };
+
+                scriptElement.onerror = () => {
+                    const log = document.createElement("p");
+                    log.textContent = `[FAILED TO LOAD]: ${script}`;
+                    log.style.color = "red";
+                    document.getElementById("log").appendChild(log);
+                };
+
                 document.body.appendChild(scriptElement);
-            });
+            };
+
+            loadNextScript();
         }
 
+        // Run Stage1 exploit
         function triggerExploit() {
             if (globalThis.r && typeof globalThis.r.si === "function") {
-                const log = document.createElement('p');
-                log.textContent = "[EXPLOIT]: Running Stage 1...";
-                document.querySelector("#log").appendChild(log);
-
+                const log = document.createElement("p");
+                log.textContent = "[EXPLOIT]: Running Stage1";
+                document.getElementById("log").appendChild(log);
                 r.si();
             } else {
-                const errorLog = document.createElement('p');
-                errorLog.textContent = "[RUN ERROR]: Exploit not initialized.";
+                const errorLog = document.createElement("p");
+                errorLog.textContent = "[EXPLOIT ERROR]: Exploit not initialized.";
                 errorLog.style.color = "red";
-                document.querySelector("#log").appendChild(errorLog);
+                document.getElementById("log").appendChild(errorLog);
             }
         }
 
-        document.addEventListener("DOMContentLoaded", () => detectPlatform());
+        document.addEventListener("DOMContentLoaded", detectPlatform, false);
     </script>
 </head>
 <body>
     <header>
         <h1>PS5 Exploitation Framework</h1>
-        <p>Status: <strong id="status">Detecting...</strong></p>
+        <p>Status: <span id="status">Detecting...</span></p>
         <button onclick="loadScripts()">Load Scripts</button>
         <button onclick="triggerExploit()">Run Exploit</button>
     </header>
@@ -78,7 +96,7 @@
         </div>
         <div id="log-container">
             <h2>Logs:</h2>
-            <div id="log"></div>
+            <div id="log" style="max-height:300px; overflow-y:auto;"></div>
         </div>
     </main>
 </body>
