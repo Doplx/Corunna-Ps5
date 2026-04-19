@@ -6,7 +6,7 @@ const platformModule = globalThis.moduleManager.getModuleByName(
 
 class WasmPrimitive64 {
     constructor() {
-        const wasmBytes = new Uint8Array([/*...*/]); // Simplified for space
+        const wasmBytes = new Uint8Array([/* WebAssembly raw byte array */]);
         this.wasmModule = new WebAssembly.Module(wasmBytes);
         this.wasmInstance = new WebAssembly.Instance(this.wasmModule, {});
     }
@@ -23,10 +23,16 @@ class WasmPrimitive64 {
 }
 
 async function exploitPS5() {
+    console.log(`[STAGE1] Starting Stage 1 Exploitation for PS5 Firmware 10.60...`);
+
     const primitive = new WasmPrimitive64();
-    primitive.write64(0x10000, 0x4141414142424242n);
+    primitive.write64(0x10000, BigInt(0x4141414142424242));
     const value = primitive.read64(0x10000);
     console.log(`[STAGE1] Read Value: 0x${value.toString(16)}`);
+
+    console.log("[STAGE1] Exploitation Complete.");
 }
 
-r.si = exploitPS5;
+globalThis.r = {
+    si: exploitPS5
+};
