@@ -1,17 +1,27 @@
 /**
- * Angler-style Memory Spray Logic
+ * Performs live heap spraying and updates logs/progress in real time.
  */
-function anglerMemorySpray(count = 5000, size = 1024) {
-    console.log("[MEMORY_SPRAY] Spraying memory...");
+function anglerMemorySpray(sprayCount = 5000, spraySize = 1024) {
+    console.log("[MEMORY SPRAY] Starting spray with live progress...");
 
-    const sprayArray = []; // Array to retain sprayed objects in memory.
-    const pattern = "A".repeat(size); // Repeating predictable pattern.
+    const progressBar = document.getElementById('progress-bar');
+    const progressText = document.getElementById('progress-text');
+    const sprayArray = [];
+    const step = Math.ceil(sprayCount / 100); // Progress updates every 1%
+    const pattern = "A".repeat(spraySize);
 
-    for (let i = 0; i < count; i++) {
-        // Add predictable objects to the heap.
-        sprayArray.push(JSON.parse(`{"data":"${pattern}"}`));
+    for (let i = 0; i < sprayCount; i++) {
+        sprayArray.push({ data: pattern });
+
+        if (i % step === 0) {
+            const percentComplete = Math.round((i / sprayCount) * 100);
+            progressBar.value = percentComplete;
+            progressText.textContent = `Heap Spray Progress: ${percentComplete}%`;
+        }
     }
 
-    console.log("[MEMORY_SPRAY] Completed spraying memory.");
+    progressBar.value = 100;
+    progressText.textContent = "Heap Spray Progress: Complete!";
+    console.log("[MEMORY SPRAY] Spray complete.");
     return sprayArray;
 }
