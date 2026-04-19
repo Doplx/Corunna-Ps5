@@ -9,9 +9,8 @@ class Stage1 {
     loadPayloads() {
         const payloads = [
             "./payloads/payload1.js",
-            "./payloads/payload2.js",
-            "./payloads/sandbox_escape.js",
-            "./payloads/hello_world.js"
+            "./payloads/hello_world.js",
+            "./payloads/ftp_server.js"
         ];
         payloads.forEach(payload => {
             const script = document.createElement("script");
