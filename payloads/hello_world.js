@@ -1,4 +1,4 @@
-console.log("[PAYLOAD] Executing Hello World payload...");
+console.log("[PAYLOAD] Hello World Payload Executing...");
 
 (function () {
     const div = document.createElement("div");
@@ -10,6 +10,7 @@ console.log("[PAYLOAD] Executing Hello World payload...");
     div.style.color = "white";
     div.style.padding = "20px";
     div.style.zIndex = "1000";
+    div.style.fontSize = "2em";
     div.innerText = "HELLO WORLD!";
     document.body.appendChild(div);
 })();
