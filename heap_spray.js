@@ -1,4 +1,4 @@
-function anglerMemorySpray(sprayCount = 5000, spraySize = 1024) {
+function heapSpray(sprayCount = 5000, spraySize = 1024) {
     const progressBar = document.getElementById("progress-bar");
     const progressText = document.getElementById("progress-text");
     const sprayArray = [];
@@ -17,4 +17,4 @@ function anglerMemorySpray(sprayCount = 5000, spraySize = 1024) {
     progressText.textContent = "Heap Spray Progress: Complete!";
     return sprayArray;
 }
-console.log("[ANGLER MEMORY SPRAY] Loaded");
+console.log("[HEAP SPRAY] Loaded");
