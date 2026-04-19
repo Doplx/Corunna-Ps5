@@ -1,104 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>PS5 Exploitation Framework</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8"/>
+  <title>PS5 Payload Launcher (Coruna)</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>PS5 Exploitation Framework</h1>
-        <p>Status: <span id="status">Detecting...</span></p>
-        <button id="loadBtn">Load Scripts</button>
-        <button id="runBtn" disabled>Run Exploit</button>
-    </header>
-    <main>
-        <div class="progress-container">
-            <progress id="progress-bar" value="0" max="100"></progress>
-            <p id="progress-text">Heap Spray Progress: 0%</p>
-        </div>
-        <div id="log-container">
-            <h2>Logs:</h2>
-            <div id="log"></div>
-        </div>
-    </main>
-    <script>
-        let isPS5 = false;
-        let scriptsLoaded = false;
-
-        function log(msg, err) {
-            const p = document.createElement('p');
-            p.textContent = msg;
-            if (err) p.style.color = "red";
-            document.getElementById("log").appendChild(p);
-        }
-
-        function detectPlatform() {
-            const userAgent = navigator.userAgent;
-            const platform = navigator.platform;
-            if (platform.includes("PlayStation") && userAgent.includes("10.60")) {
-                isPS5 = true;
-                document.getElementById("status").innerText = "PS5 10.60 Detected!";
-                log("[PLATFORM] PS5 Detected!");
-            } else {
-                document.getElementById("status").innerText = "Unsupported Platform";
-                log("[PLATFORM] Unsupported platform detected.", true);
-            }
-        }
-
-        function loadScriptsSequentially() {
-            const scripts = [
-                "./platform_module.js",
-                "./utility_module.js",
-                "./angler_memory_spray.js",
-                "./Stage1_16.2_16.5.1.js"
-            ];
-            let index = 0;
-
-            const loadNext = () => {
-                if (index === scripts.length) {
-                    scriptsLoaded = true;
-                    document.getElementById("runBtn").disabled = false;
-                    log("All scripts loaded successfully.");
-                    return;
-                }
-                const script = document.createElement("script");
-                script.src = scripts[index];
-                script.async = false;
-                script.onload = () => {
-                    log(`[SCRIPT LOADED]: ${scripts[index]}`);
-                    index++;
-                    loadNext();
-                };
-                script.onerror = () => {
-                    log(`[FAILED TO LOAD]: ${scripts[index]}`, true);
-                };
-                document.body.appendChild(script);
-            };
-            loadNext();
-        }
-
-        document.getElementById("loadBtn").onclick = function() {
-            if (!isPS5) {
-                alert("PS5 Platform Required. Please try again on PS5!");
-                return;
-            }
-            if (scriptsLoaded) {
-                log("Scripts already loaded.");
-                return;
-            }
-            loadScriptsSequentially();
-        };
-
-        document.getElementById("runBtn").onclick = function() {
-            if (window.r && typeof window.r.si === "function") {
-                log("[EXPLOIT]: Running Stage1...");
-                window.r.si();
-            } else {
-                log("[EXPLOIT ERROR]: Exploit not initialized.", true);
-            }
-        };
-
-        detectPlatform();
-    </script>
+  <header>
+    <h1>PS5 Payload Launcher (Coruna)</h1>
+    <p>Status: <span id="status">Detecting...</span></p>
+    <button id="loadBtn">Load Framework</button>
+    <button id="runBtn" disabled>Run Exploit</button>
+  </header>
+  <main>
+    <div class="progress-container">
+      <progress id="progress-bar" value="0" max="100"></progress>
+      <p id="progress-text">Heap Spray Progress: 0%</p>
+    </div>
+    <div id="log-container">
+      <h2>Logs:</h2>
+      <div id="log"></div>
+    </div>
+  </main>
+  <script src="loader.js"></script>
 </body>
 </html>
