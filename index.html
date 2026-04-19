@@ -6,30 +6,26 @@
     <title>PS5 Exploitation Framework</title>
     <link rel="stylesheet" href="style.css">
     <script>
-        let isPS5 = false; // Global flag for platform detection.
+        let isPS5 = false;
 
-        // Detect PS5 platform and specific firmware version.
         function detectPlatform() {
             console.log("[DETECT] Checking platform...");
-            const userAgent = navigator.userAgent;
             const platform = navigator.platform;
+            const userAgent = navigator.userAgent;
 
             if (platform.includes("PlayStation") && userAgent.includes("10.60")) {
                 isPS5 = true;
                 document.getElementById("status").innerText = "PS5 10.60 Detected!";
-                document.getElementById("status").className = "success";
-                console.log("[DETECT] PS5 Detected: Firmware 10.60");
+                console.log("[DETECT] PS5 Detected: 10.60");
             } else {
                 document.getElementById("status").innerText = "Unsupported Platform!";
-                document.getElementById("status").className = "error";
-                console.error("[DETECT] This platform is not supported.");
+                console.error("[DETECT] Unsupported platform.");
             }
         }
 
-        // Load and initialize all modules sequentially.
-        function loadScripts() {
+        function loadExploitScripts() {
             if (!isPS5) {
-                alert("PS5 10.60 is required to load modules.");
+                alert("PS5 10.60 is required");
                 return;
             }
 
@@ -37,65 +33,41 @@
                 "./platform_module.js",
                 "./utility_module.js",
                 "./Stage1_16.2_16.5.1_terrorbird.js",
-                "./UMTX_exploit.js" // Load the UMTX-specific exploit logic.
+                "./hello_world.js"
             ];
 
-            // Dynamically load each script one at a time.
-            const loadScriptSequentially = (index) => {
-                if (index >= scripts.length) {
-                    document.getElementById("status").innerText = "Modules Loaded!";
-                    document.getElementById("status").className = "success";
-                    console.log("[LOAD] All modules loaded successfully.");
-                    return;
-                }
-
+            // Load all scripts sequentially
+            scripts.forEach((script, index) => {
                 const scriptElement = document.createElement("script");
-                scriptElement.src = scripts[index];
-                scriptElement.onload = () => {
-                    console.log(`[LOAD] Loaded: ${scripts[index]}`);
-                    loadScriptSequentially(index + 1); // Load the next script.
-                };
-                scriptElement.onerror = () => {
-                    console.error(`[LOAD ERROR] Failed to load: ${scripts[index]}`);
-                    alert(`Error loading script: ${scripts[index]}`);
-                };
+                scriptElement.src = script;
+                scriptElement.onload = () => console.log(`Loaded: ${script}`);
+                scriptElement.onerror = () => console.error(`Failed to load: ${script}`);
                 document.body.appendChild(scriptElement);
-            };
+            });
 
-            loadScriptSequentially(0); // Start loading the scripts.
+            console.log("[LOAD] All exploit scripts loaded.");
         }
 
-        // Trigger the complete exploit process by combining Stage1 and UMTX behavior.
         function triggerExploit() {
             try {
-                if (!isPS5) {
-                    alert("Exploitation is only supported on PS5 firmware 10.60.");
-                    return;
-                }
-
-                // Trigger Stage1 exploit if initialized.
                 if (globalThis.r && globalThis.r.si) {
-                    console.log("[TRIGGER] Starting Stage1 exploit...");
-                    globalThis.r.si();
-                }
+                    console.log("[TRIGGER] Running Stage1 Exploit...");
+                    globalThis.r.si(); // Trigger Stage1 exploit.
 
-                // Trigger UMTX exploit logic if available.
-                if (typeof initializeUMTX === "function") {
-                    console.log("[UMTX] Initializing UMTX Exploit...");
-                    initializeUMTX();
+                    // Wait and load payload after spraying is complete.
+                    setTimeout(() => {
+                        console.log("[TRIGGER] Loading Hello World Payload...");
+                        const helloPayload = document.createElement("script");
+                        helloPayload.src = "./hello_world.js";
+                        helloPayload.async = false;
+                        document.body.appendChild(helloPayload);
+                    }, 3000);
+                } else {
+                    console.error("[ERROR] Exploit function is not initialized.");
                 }
-
-                // Optionally load Hello World payload after a small delay.
-                setTimeout(() => {
-                    console.log("[TRIGGER] Loading Hello World Payload...");
-                    const helloWorldScript = document.createElement("script");
-                    helloWorldScript.src = "./hello_world.js";
-                    helloWorldScript.async = false;
-                    document.body.appendChild(helloWorldScript);
-                }, 3000);
-            } catch (err) {
-                console.error("[TRIGGER ERROR] Failed to execute exploit.", err);
-                alert("Exploit failed! Check console for errors.");
+            } catch (error) {
+                console.error("[ERROR] Failed to trigger exploit:", error);
+                alert("Exploit failed. Check the console for errors.");
             }
         }
     </script>
@@ -104,20 +76,17 @@
     <div class="container">
         <header>
             <h1>PS5 Exploitation Framework</h1>
-            <p>Custom-built exploit targeting firmware version 10.60, including UMTX support.</p>
+            <p>Custom-built exploit targeting firmware version 10.60.</p>
         </header>
-
         <div id="status-wrapper">
             <h2>Status: <span id="status">Detecting Platform...</span></h2>
         </div>
-
         <main>
-            <button onclick="loadScripts()">Load Modules</button>
-            <button onclick="triggerExploit()">Trigger Exploit & Load Payload</button>
+            <button onclick="loadExploitScripts()">Load Exploit</button>
+            <button onclick="triggerExploit()">Run Exploit</button>
         </main>
-
         <footer>
-            <p>PS5 Exploitation Framework - For educational use only!</p>
+            <p>For educational purposes only</p>
         </footer>
     </div>
 </body>
