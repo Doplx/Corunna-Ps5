@@ -1,79 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PS5 Exploitation Framework</title>
     <link rel="stylesheet" href="style.css">
     <script>
         let isPS5 = false;
 
         function detectPlatform() {
-            console.log("[DETECT] Checking platform...");
-            const userAgent = navigator.userAgent;
             const platform = navigator.platform;
+            const userAgent = navigator.userAgent;
 
             if (platform.includes("PlayStation") && userAgent.includes("10.60")) {
                 isPS5 = true;
                 document.getElementById("status").innerText = "PS5 10.60 Detected!";
-                console.log("[DETECT] Platform is PS5 with firmware 10.60");
+                console.log("[PLATFORM] PS5 Detected!");
             } else {
                 document.getElementById("status").innerText = "Unsupported Platform";
-                console.error("[DETECT] Unsupported platform detected.");
+                console.error("[PLATFORM] Unsupported platform detected.");
             }
         }
 
         function loadScripts() {
             if (!isPS5) {
-                alert("PS5 10.60 platform required.");
+                alert("PS5 Platform Required. Please try again on PS5!");
                 return;
             }
 
             const scripts = [
                 "./platform_module.js",
                 "./utility_module.js",
-                "./angler_memory_spray.js", // Angler's memory spraying logic
-                "./Stage1_16.2_16.5.1_terrorbird.js",
-                "./hello_world.js"
+                "./angler_memory_spray.js",
+                "./Stage1_16.2_16.5.1.js"
             ];
 
             scripts.forEach(script => {
                 const scriptElement = document.createElement("script");
                 scriptElement.src = script;
                 scriptElement.async = false;
-                scriptElement.onload = () => console.log(`[LOAD] ${script} loaded.`);
-                scriptElement.onerror = () => console.error(`[LOAD] Error loading ${script}`);
+                scriptElement.onload = () => {
+                    const log = document.createElement('p');
+                    log.textContent = `[SCRIPT LOADED]: ${script}`;
+                    document.querySelector("#log").appendChild(log);
+                };
                 document.body.appendChild(scriptElement);
             });
         }
 
-        function runExploit() {
-            try {
-                if (globalThis.r && globalThis.r.si) {
-                    console.log("[RUN] Triggering Stage1 exploit...");
-                    globalThis.r.si();
-                } else {
-                    console.error("[RUN] Exploit function not initialized (r.si undefined).");
-                }
-            } catch (err) {
-                console.error("[RUN ERROR] Exploit failed:", err);
+        function triggerExploit() {
+            if (globalThis.r && typeof globalThis.r.si === "function") {
+                const log = document.createElement('p');
+                log.textContent = "[EXPLOIT]: Running Stage 1...";
+                document.querySelector("#log").appendChild(log);
+
+                r.si();
+            } else {
+                const errorLog = document.createElement('p');
+                errorLog.textContent = "[RUN ERROR]: Exploit not initialized.";
+                errorLog.style.color = "red";
+                document.querySelector("#log").appendChild(errorLog);
             }
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            detectPlatform();
-        });
+        document.addEventListener("DOMContentLoaded", () => detectPlatform());
     </script>
 </head>
 <body>
     <header>
         <h1>PS5 Exploitation Framework</h1>
-        <p>Custom PS5 exploit for firmware 10.60 based on Angler's memory spray with Coruna's payloads.</p>
-    </header>
-    <main>
         <p>Status: <strong id="status">Detecting...</strong></p>
         <button onclick="loadScripts()">Load Scripts</button>
-        <button onclick="runExploit()">Trigger Exploit</button>
+        <button onclick="triggerExploit()">Run Exploit</button>
+    </header>
+    <main>
+        <div class="progress-container">
+            <progress id="progress-bar" value="0" max="100"></progress>
+            <p id="progress-text">Heap Spray Progress: 0%</p>
+        </div>
+        <div id="log-container">
+            <h2>Logs:</h2>
+            <div id="log"></div>
+        </div>
     </main>
 </body>
 </html>
