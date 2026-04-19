@@ -5,12 +5,10 @@ body {
     text-align: center;
     margin: 0;
 }
-
 header {
     padding: 20px;
     background: #1e1e1e;
 }
-
 button {
     padding: 10px 20px;
     margin: 10px;
@@ -20,25 +18,24 @@ button {
     border-radius: 5px;
     cursor: pointer;
 }
-
-button:hover {
+button:disabled {
+    background: #444;
+    cursor: not-allowed;
+}
+button:hover:enabled {
     background: #16a34a;
 }
-
 .progress-container {
     margin: 20px;
 }
-
 progress {
     width: 90%;
     height: 20px;
 }
-
 #progress-text {
     margin-top: 10px;
     font-weight: bold;
 }
-
 #log-container {
     margin-top: 20px;
     text-align: left;
@@ -46,10 +43,10 @@ progress {
     background: #1e1e1e;
     border-radius: 5px;
 }
-
 #log {
     font-size: 14px;
     border: 1px solid white;
     padding: 10px;
     overflow-y: scroll;
+    max-height: 300px;
 }
