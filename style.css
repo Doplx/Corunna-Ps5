@@ -1,41 +1,60 @@
 body {
     font-family: Arial, sans-serif;
+    background: #121212;
+    color: white;
+    text-align: center;
     margin: 0;
-    background-color: #121212;
-    color: #fff;
 }
 
 header {
-    text-align: center;
     padding: 20px;
-    background-color: #242424;
-}
-
-header h1 {
-    color: #1DB954;
-}
-header p {
-    color: #ccc;
-}
-
-main {
-    text-align: center;
-    margin-top: 20px;
-}
-main p {
-    font-size: 1.2em;
+    background: #1e1e1e;
 }
 
 button {
-    margin: 10px;
-    font-size: 1em;
     padding: 10px 20px;
-    color: #fff;
-    background-color: #1DB954;
+    margin: 10px;
+    background: #1DB954;
+    color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 }
+
 button:hover {
-    background-color: #16a34a;
+    background: #16a34a;
+}
+
+.progress-container {
+    margin: 20px;
+}
+
+progress {
+    width: 90%;
+    height: 20px;
+    margin: 0 auto;
+}
+
+#progress-text {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+#log-container {
+    margin-top: 20px;
+    text-align: left;
+    padding: 10px;
+    background: #1e1e1e;
+    border-radius: 5px;
+}
+
+#log {
+    max-height: 300px;
+    overflow-y: scroll;
+    padding: 10px;
+    font-size: 14px;
+    background: #121212;
+    color: #00FF00;
+    border: 1px solid #333;
+    border-radius: 3px;
 }
