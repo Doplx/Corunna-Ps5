@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PS5 Exploitation Framework</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        // Global variables for platform detection and exploit process
+        let isPS5 = false;
+
+        // Detect PS5 platform
+        function detectPlatform() {
+            console.log("[DETECT] Checking platform...");
+            const userAgent = navigator.userAgent;
+            const platform = navigator.platform;
+
+            if (platform.includes("PlayStation") && userAgent.includes("10.60")) {
+                isPS5 = true;
+                document.getElementById("status").innerText = "PS5 10.60 Detected!";
+                document.getElementById("status").className = "success";
+                console.log("[DETECT] PS5 Detected: Firmware 10.60");
+            } else {
+                document.getElementById("status").innerText = "Unsupported Platform!";
+                document.getElementById("status").className = "error";
+                console.error("[DETECT] This platform is not supported.");
+            }
+        }
+
+        // Load and initialize modules
+        function loadModules() {
+            if (!isPS5) {
+                alert("PS5 10.60 is required to load modules.");
+                return;
+            }
+
+            const scripts = [
+                "./platform_module.js",
+                "./utility_module.js",
+                "./Stage1_16.2_16.5.1_terrorbird.js",
+            ];
+
+            scripts.forEach(script => {
+                const scriptTag = document.createElement("script");
+                scriptTag.src = script;
+                scriptTag.async = false; // Ensure scripts load in sequence
+                document.body.appendChild(scriptTag);
+                console.log(`[LOAD] Module loaded: ${script}`);
+            });
+
+            document.getElementById("status").innerText = "Modules Loaded!";
+            document.getElementById("status").className = "success";
+        }
+
+        // Trigger Exploit
+        function triggerExploit() {
+            if (!globalThis.r || !globalThis.r.si) {
+                alert("Modules are not loaded or exploit is not initialized.");
+                console.error("[TRIGGER] Exploitation script not found.");
+                return;
+            }
+
+            console.log("[TRIGGER] Starting exploitation...");
+            globalThis.r.si();
+        }
+    </script>
+</head>
+<body onload="detectPlatform()">
+    <div class="container">
+        <header>
+            <h1>PS5 Exploitation Framework</h1>
+            <p>Custom-built exploit targeting firmware version 10.60.</p>
+        </header>
+
+        <div id="status-wrapper">
+            <h2>Status: <span id="status">Detecting Platform...</span></h2>
+        </div>
+
+        <main>
+            <button onclick="loadModules()">Load Modules</button>
+            <button onclick="triggerExploit()">Trigger Exploit</button>
+        </main>
+
+        <footer>
+            <p>PS5 Exploitation Framework - For educational use only!</p>
+        </footer>
+    </div>
+</body>
+</html>
