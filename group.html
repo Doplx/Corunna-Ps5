@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PS5 Exploitation Entry Point</title>
+    <script>
+        console.log("[GROUP] Initializing exploit...");
+
+        // Platform Check and Script Loader
+        function loadScripts() {
+            console.log("[GROUP] Detecting platform...");
+            const userAgent = navigator.userAgent;
+            const platform = navigator.platform;
+            console.log(`[GROUP] Platform: ${platform}, User Agent: ${userAgent}`);
+
+            // Check for PS5 and firmware version
+            if (platform.includes("PlayStation") && userAgent.includes("10.60")) {
+                console.log("[GROUP] PS5 firmware 10.60 detected! Proceeding with exploitation...");
+
+                // Dynamically load necessary scripts for PS5
+                const scripts = [
+                    "./platform_module.js",
+                    "./Stage1_16.2_16.5.1_terrorbird.js", // PS5-adapted Stage1
+                ];
+                for (const script of scripts) {
+                    const scriptElement = document.createElement("script");
+                    scriptElement.src = script;
+                    scriptElement.async = false; // Ensure sequential loading
+                    document.head.appendChild(scriptElement);
+                    console.log(`[GROUP] Loaded: ${script}`);
+                }
+
+                // Optional: Load utility module
+                const utilityScript = document.createElement("script");
+                utilityScript.src = "./utility_module.js";
+                utilityScript.async = false;
+                document.head.appendChild(utilityScript);
+                console.log("[GROUP] Loaded utility module.");
+
+                // After loading scripts, trigger the exploit
+                document.addEventListener("DOMContentLoaded", () => {
+                    setTimeout(() => {
+                        console.log("[GROUP] Triggering exploit...");
+                        if (globalThis.r && globalThis.r.si) {
+                            globalThis.r.si(); // Execute exploit stage
+                        } else {
+                            console.error("[GROUP ERROR] Exploitation script not loaded properly.");
+                        }
+                    }, 300); // Delay ensures scripts are fully loaded
+                });
+            } else {
+                console.error("[GROUP ERROR] Unsupported platform or firmware. PS5 10.60 required.");
+            }
+        }
+
+        // Start the loader
+        loadScripts();
+    </script>
+</head>
+<body>
+    <h1>PS5 Exploitation Framework</h1>
+    <p>If you see this message, the exploit framework is initializing...</p>
+</body>
+</html>
