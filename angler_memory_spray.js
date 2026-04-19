@@ -1,5 +1,4 @@
 function anglerMemorySpray(sprayCount = 5000, spraySize = 1024) {
-    console.log("[MEMORY SPRAY] Starting live heap spray...");
     const progressBar = document.getElementById("progress-bar");
     const progressText = document.getElementById("progress-text");
     const sprayArray = [];
@@ -8,16 +7,14 @@ function anglerMemorySpray(sprayCount = 5000, spraySize = 1024) {
 
     for (let i = 0; i < sprayCount; i++) {
         sprayArray.push({ data: pattern });
-        if (i % step === 0) {
+        if (i % step === 0 || i === sprayCount - 1) {
             const percent = Math.round((i / sprayCount) * 100);
             progressBar.value = percent;
             progressText.textContent = `Heap Spray Progress: ${percent}%`;
         }
     }
-
     progressBar.value = 100;
     progressText.textContent = "Heap Spray Progress: Complete!";
-    console.log("[MEMORY SPRAY] Spray complete.");
-
     return sprayArray;
 }
+console.log("[ANGLER MEMORY SPRAY] Loaded");
