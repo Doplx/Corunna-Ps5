@@ -10,84 +10,70 @@
 
         function detectPlatform() {
             console.log("[DETECT] Checking platform...");
-            const platform = navigator.platform;
             const userAgent = navigator.userAgent;
+            const platform = navigator.platform;
 
             if (platform.includes("PlayStation") && userAgent.includes("10.60")) {
                 isPS5 = true;
                 document.getElementById("status").innerText = "PS5 10.60 Detected!";
-                console.log("[DETECT] PS5 Detected: 10.60");
+                console.log("[DETECT] Platform is PS5 with firmware 10.60");
             } else {
-                document.getElementById("status").innerText = "Unsupported Platform!";
-                console.error("[DETECT] Unsupported platform.");
+                document.getElementById("status").innerText = "Unsupported Platform";
+                console.error("[DETECT] Unsupported platform detected.");
             }
         }
 
-        function loadExploitScripts() {
+        function loadScripts() {
             if (!isPS5) {
-                alert("PS5 10.60 is required");
+                alert("PS5 10.60 platform required.");
                 return;
             }
 
             const scripts = [
                 "./platform_module.js",
                 "./utility_module.js",
+                "./angler_memory_spray.js", // Angler's memory spraying logic
                 "./Stage1_16.2_16.5.1_terrorbird.js",
                 "./hello_world.js"
             ];
 
-            // Load all scripts sequentially
-            scripts.forEach((script, index) => {
+            scripts.forEach(script => {
                 const scriptElement = document.createElement("script");
                 scriptElement.src = script;
-                scriptElement.onload = () => console.log(`Loaded: ${script}`);
-                scriptElement.onerror = () => console.error(`Failed to load: ${script}`);
+                scriptElement.async = false;
+                scriptElement.onload = () => console.log(`[LOAD] ${script} loaded.`);
+                scriptElement.onerror = () => console.error(`[LOAD] Error loading ${script}`);
                 document.body.appendChild(scriptElement);
             });
-
-            console.log("[LOAD] All exploit scripts loaded.");
         }
 
-        function triggerExploit() {
+        function runExploit() {
             try {
                 if (globalThis.r && globalThis.r.si) {
-                    console.log("[TRIGGER] Running Stage1 Exploit...");
-                    globalThis.r.si(); // Trigger Stage1 exploit.
-
-                    // Wait and load payload after spraying is complete.
-                    setTimeout(() => {
-                        console.log("[TRIGGER] Loading Hello World Payload...");
-                        const helloPayload = document.createElement("script");
-                        helloPayload.src = "./hello_world.js";
-                        helloPayload.async = false;
-                        document.body.appendChild(helloPayload);
-                    }, 3000);
+                    console.log("[RUN] Triggering Stage1 exploit...");
+                    globalThis.r.si();
                 } else {
-                    console.error("[ERROR] Exploit function is not initialized.");
+                    console.error("[RUN] Exploit function not initialized (r.si undefined).");
                 }
-            } catch (error) {
-                console.error("[ERROR] Failed to trigger exploit:", error);
-                alert("Exploit failed. Check the console for errors.");
+            } catch (err) {
+                console.error("[RUN ERROR] Exploit failed:", err);
             }
         }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            detectPlatform();
+        });
     </script>
 </head>
-<body onload="detectPlatform()">
-    <div class="container">
-        <header>
-            <h1>PS5 Exploitation Framework</h1>
-            <p>Custom-built exploit targeting firmware version 10.60.</p>
-        </header>
-        <div id="status-wrapper">
-            <h2>Status: <span id="status">Detecting Platform...</span></h2>
-        </div>
-        <main>
-            <button onclick="loadExploitScripts()">Load Exploit</button>
-            <button onclick="triggerExploit()">Run Exploit</button>
-        </main>
-        <footer>
-            <p>For educational purposes only</p>
-        </footer>
-    </div>
+<body>
+    <header>
+        <h1>PS5 Exploitation Framework</h1>
+        <p>Custom PS5 exploit for firmware 10.60 based on Angler's memory spray with Coruna's payloads.</p>
+    </header>
+    <main>
+        <p>Status: <strong id="status">Detecting...</strong></p>
+        <button onclick="loadScripts()">Load Scripts</button>
+        <button onclick="runExploit()">Trigger Exploit</button>
+    </main>
 </body>
 </html>
