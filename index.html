@@ -3,91 +3,13 @@
 <head>
     <title>PS5 Exploitation Framework</title>
     <link rel="stylesheet" href="style.css">
-    <script>
-        let isPS5 = false;
-
-        // Detect if this is a PS5 with firmware 10.60
-        function detectPlatform() {
-            const userAgent = navigator.userAgent;
-            const platform = navigator.platform;
-            if (platform.includes("PlayStation") && userAgent.includes("10.60")) {
-                isPS5 = true;
-                document.getElementById("status").innerText = "PS5 10.60 Detected!";
-                console.log("[PLATFORM] PS5 Detected!");
-            } else {
-                document.getElementById("status").innerText = "Unsupported Platform";
-                console.error("[PLATFORM] Unsupported platform detected.");
-            }
-        }
-
-        // Load all necessary scripts in sequence
-        function loadScripts() {
-            const scripts = [
-                "./platform_module.js",
-                "./utility_module.js",
-                "./angler_memory_spray.js",
-                "./Stage1_16.2_16.5.1.js"
-            ];
-
-            let index = 0;
-            const loadNextScript = () => {
-                if (index >= scripts.length) {
-                    const log = document.createElement("p");
-                    log.textContent = "All scripts loaded successfully.";
-                    document.getElementById("log").appendChild(log);
-                    return;
-                }
-
-                const script = scripts[index];
-                const scriptElement = document.createElement("script");
-                scriptElement.src = script;
-                scriptElement.async = false;
-
-                scriptElement.onload = () => {
-                    const log = document.createElement("p");
-                    log.textContent = `[SCRIPT LOADED]: ${script}`;
-                    document.getElementById("log").appendChild(log);
-                    index++;
-                    loadNextScript();
-                };
-
-                scriptElement.onerror = () => {
-                    const log = document.createElement("p");
-                    log.textContent = `[FAILED TO LOAD]: ${script}`;
-                    log.style.color = "red";
-                    document.getElementById("log").appendChild(log);
-                };
-
-                document.body.appendChild(scriptElement);
-            };
-
-            loadNextScript();
-        }
-
-        // Run Stage1 exploit
-        function triggerExploit() {
-            if (globalThis.r && typeof globalThis.r.si === "function") {
-                const log = document.createElement("p");
-                log.textContent = "[EXPLOIT]: Running Stage1";
-                document.getElementById("log").appendChild(log);
-                r.si();
-            } else {
-                const errorLog = document.createElement("p");
-                errorLog.textContent = "[EXPLOIT ERROR]: Exploit not initialized.";
-                errorLog.style.color = "red";
-                document.getElementById("log").appendChild(errorLog);
-            }
-        }
-
-        document.addEventListener("DOMContentLoaded", detectPlatform, false);
-    </script>
 </head>
 <body>
     <header>
         <h1>PS5 Exploitation Framework</h1>
         <p>Status: <span id="status">Detecting...</span></p>
-        <button onclick="loadScripts()">Load Scripts</button>
-        <button onclick="triggerExploit()">Run Exploit</button>
+        <button id="loadBtn">Load Scripts</button>
+        <button id="runBtn" disabled>Run Exploit</button>
     </header>
     <main>
         <div class="progress-container">
@@ -96,8 +18,87 @@
         </div>
         <div id="log-container">
             <h2>Logs:</h2>
-            <div id="log" style="max-height:300px; overflow-y:auto;"></div>
+            <div id="log"></div>
         </div>
     </main>
+    <script>
+        let isPS5 = false;
+        let scriptsLoaded = false;
+
+        function log(msg, err) {
+            const p = document.createElement('p');
+            p.textContent = msg;
+            if (err) p.style.color = "red";
+            document.getElementById("log").appendChild(p);
+        }
+
+        function detectPlatform() {
+            const userAgent = navigator.userAgent;
+            const platform = navigator.platform;
+            if (platform.includes("PlayStation") && userAgent.includes("10.60")) {
+                isPS5 = true;
+                document.getElementById("status").innerText = "PS5 10.60 Detected!";
+                log("[PLATFORM] PS5 Detected!");
+            } else {
+                document.getElementById("status").innerText = "Unsupported Platform";
+                log("[PLATFORM] Unsupported platform detected.", true);
+            }
+        }
+
+        function loadScriptsSequentially() {
+            const scripts = [
+                "./platform_module.js",
+                "./utility_module.js",
+                "./angler_memory_spray.js",
+                "./Stage1_16.2_16.5.1.js"
+            ];
+            let index = 0;
+
+            const loadNext = () => {
+                if (index === scripts.length) {
+                    scriptsLoaded = true;
+                    document.getElementById("runBtn").disabled = false;
+                    log("All scripts loaded successfully.");
+                    return;
+                }
+                const script = document.createElement("script");
+                script.src = scripts[index];
+                script.async = false;
+                script.onload = () => {
+                    log(`[SCRIPT LOADED]: ${scripts[index]}`);
+                    index++;
+                    loadNext();
+                };
+                script.onerror = () => {
+                    log(`[FAILED TO LOAD]: ${scripts[index]}`, true);
+                };
+                document.body.appendChild(script);
+            };
+            loadNext();
+        }
+
+        document.getElementById("loadBtn").onclick = function() {
+            if (!isPS5) {
+                alert("PS5 Platform Required. Please try again on PS5!");
+                return;
+            }
+            if (scriptsLoaded) {
+                log("Scripts already loaded.");
+                return;
+            }
+            loadScriptsSequentially();
+        };
+
+        document.getElementById("runBtn").onclick = function() {
+            if (window.r && typeof window.r.si === "function") {
+                log("[EXPLOIT]: Running Stage1...");
+                window.r.si();
+            } else {
+                log("[EXPLOIT ERROR]: Exploit not initialized.", true);
+            }
+        };
+
+        detectPlatform();
+    </script>
 </body>
 </html>
