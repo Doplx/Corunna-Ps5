@@ -1,42 +1,32 @@
-// Remove any previous notification if present
-let prevNotif = document.getElementById('ps-notification');
-if (prevNotif) {
-    prevNotif.remove();
-}
+// Hello World Payload
+// Clear existing logs and show large "Hello World" text
 
-// Create the notification container
-const notif = document.createElement('div');
-notif.id = "ps-notification";
-notif.style.position = "fixed";
-notif.style.top = "40px";
-notif.style.left = "50%";
-notif.style.transform = "translateX(-50%)";
-notif.style.background = "rgba(20, 20, 20, 0.96)";
-notif.style.color = "#00FFFF";
-notif.style.fontFamily = "PS5, 'Segoe UI', Arial, sans-serif";
-notif.style.fontWeight = "bold";
-notif.style.fontSize = "2.6em";
-notif.style.padding = "24px 80px";
-notif.style.borderRadius = "24px";
-notif.style.boxShadow = "0 8px 28px rgba(0,0,0,0.3)";
-notif.style.zIndex = "10000";
-notif.style.display = "flex";
-notif.style.alignItems = "center";
-notif.style.justifyContent = "center";
-notif.textContent = "HELLO WORLD";
+// Clear the logger lines
+logger.lines = [];
+logger.refresh();
 
-// Optionally include a PlayStation icon SVG
-const icon = document.createElement('span');
-icon.innerHTML = `<svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="22" fill="#fff"/><text x="50%" y="58%" text-anchor="middle" fill="#1DB9FF" font-size="30" font-family="Arial" dy=".3em">🅟</text></svg>`;
-icon.style.marginRight = "24px";
-notif.prepend(icon);
+// Create a large text widget
+var helloWidget = nrdp.gibbon.makeWidget({
+    name: "hello",
+    x: 200,
+    y: 250,
+    width: 880,
+    height: 220
+});
 
-document.body.appendChild(notif);
+helloWidget.text = {
+    contents: "HELLO WORLD",
+    size: 72,
+    color: { a: 255, r: 0, g: 255, b: 255 }, // Cyan
+    wrap: false
+};
 
-setTimeout(() => {
-    notif.style.transition = "opacity 0.75s";
-    notif.style.opacity = "0";
-    setTimeout(() => notif.remove(), 750);
-}, 3200);
+helloWidget.parent = logger.overlay;
 
-console.log("[PS-HELLO] Notification shown!");
+// Send notification
+send_notification("Hello Netflix! 🎬");
+
+// Log success
+logger.log("Payload executed!");
+logger.log("Hello World displayed");
+logger.flush();
