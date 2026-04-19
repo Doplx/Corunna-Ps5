@@ -18,24 +18,11 @@ button {
     border-radius: 5px;
     cursor: pointer;
 }
-button:disabled {
-    background: #444;
-    cursor: not-allowed;
-}
-button:hover:enabled {
-    background: #16a34a;
-}
-.progress-container {
-    margin: 20px;
-}
-progress {
-    width: 90%;
-    height: 20px;
-}
-#progress-text {
-    margin-top: 10px;
-    font-weight: bold;
-}
+button:disabled { background: #444; cursor: not-allowed; }
+button:hover:enabled { background: #16a34a; }
+.progress-container { margin: 20px; }
+progress { width: 90%; height: 20px; }
+#progress-text { margin-top: 10px; font-weight: bold; }
 #log-container {
     margin-top: 20px;
     text-align: left;
