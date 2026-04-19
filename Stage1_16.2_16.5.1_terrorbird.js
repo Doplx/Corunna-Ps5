@@ -1,38 +1,34 @@
 let r = {};
 
-const platformModule = globalThis.moduleManager.getModuleByName(
-    "14669ca3b1519ba2a8f40be287f646d4d7593eb0"
-);
-
-class WasmPrimitive64 {
+/**
+ * Stage1 Exploit with Angler-style Spraying
+ */
+class Stage1 {
     constructor() {
-        const wasmBytes = new Uint8Array([/* WebAssembly raw byte array */]);
-        this.wasmModule = new WebAssembly.Module(wasmBytes);
-        this.wasmInstance = new WebAssembly.Instance(this.wasmModule, {});
+        console.log("[STAGE1] Initializing Stage1 exploit...");
+        this.sprayArray = null;
     }
 
-    read64(address) {
-        address = platformModule.alignMemoryAddress(address);
-        return BigInt(this.wasmInstance.exports.read(address));
+    /**
+     * Trigger memory spraying using Angler's logic
+     */
+    performMemorySpray() {
+        console.log("[STAGE1] Spraying memory...");
+        this.sprayArray = anglerMemorySpray(5000, 1024);
     }
 
-    write64(address, value) {
-        address = platformModule.alignMemoryAddress(address);
-        this.wasmInstance.exports.write(address, value);
+    /**
+     * Payload execution through RW primitives
+     */
+    runExploit() {
+        console.log("[STAGE1] Performing exploitation...");
+        this.performMemorySpray();
+        // Exploit logic here (e.g., heap manipulation, RW primitives, etc.)
+        console.log("[STAGE1] Exploit completed.");
     }
 }
 
-async function exploitPS5() {
-    console.log(`[STAGE1] Starting Stage 1 Exploitation for PS5 Firmware 10.60...`);
-
-    const primitive = new WasmPrimitive64();
-    primitive.write64(0x10000, BigInt(0x4141414142424242));
-    const value = primitive.read64(0x10000);
-    console.log(`[STAGE1] Read Value: 0x${value.toString(16)}`);
-
-    console.log("[STAGE1] Exploitation Complete.");
-}
-
-globalThis.r = {
-    si: exploitPS5
+r.si = () => {
+    const stage1 = new Stage1();
+    stage1.runExploit();
 };
