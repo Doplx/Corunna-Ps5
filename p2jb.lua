@@ -637,7 +637,7 @@ function p2jb_ps5()
         return nil
     end
 
-    show_dialog("Stage Patience\nPlease wait for some time (~2 hours)")
+    show_dialog("Stage Patience\nPlease wait for some time (~10 Second)")
     local ucred = 0
     local free_fds = {}
     local free_fd_idx = 1
