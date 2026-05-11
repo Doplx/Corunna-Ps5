@@ -2,7 +2,7 @@
 -- based on poops_ps5.lua and p2jb.c by Gezine
 -- based on poops.lua (ps4) by egycnq
 
-p2jb_version_string = "P2JB 2.5"
+p2jb_version_string = "P2JB 2.6"
 
 local UCRED_SIZE          = 360
 local RTHDR_TAG           = 0x13370000
