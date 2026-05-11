@@ -1,5 +1,5 @@
 -- p2jb implementation
--- based on poops_ps5.lua and p2jb.c by Doplx
+-- based on poops_ps5.lua and p2jb.c by Gezine edited byDoplx
 -- based on poops.lua (ps4) by egycnq
 
 p2jb_version_string = "P2JB 2.6"
