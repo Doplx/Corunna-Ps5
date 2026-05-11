@@ -238,9 +238,9 @@ function p2jb_ps5()
     local rthdr_readback = malloc(360)
     for i = 0, 248, 8 do write64(rthdr_readback + i, 0) end
 
-    local DELAY_SHORT  = malloc(16); write64(DELAY_SHORT, 0);  write64(DELAY_SHORT + 8, 10000000)
-    local DELAY_MEDIUM = malloc(16); write64(DELAY_MEDIUM, 0); write64(DELAY_MEDIUM + 8, 500000000)
-    local DELAY_SETTLE = malloc(16); write64(DELAY_SETTLE, 0); write64(DELAY_SETTLE + 8, 100000000)
+    local DELAY_SHORT  = malloc(16); write64(DELAY_SHORT, 0);  write64(DELAY_SHORT + 8, 10 * 1000)    -- 10ms
+    local DELAY_MEDIUM = malloc(16); write64(DELAY_MEDIUM, 0); write64(DELAY_MEDIUM + 8, 50 * 1000)   -- 50ms
+    local DELAY_SETTLE = malloc(16); write64(DELAY_SETTLE, 0); write64(DELAY_SETTLE + 8, 100 * 1000) -- 100ms
 
     -- cpu pinning
     local cpu_mask = malloc(16)
